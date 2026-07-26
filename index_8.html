@@ -130,14 +130,24 @@ import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gsta
    הגדרות Firebase — הדבק כאן את ה-config מהפרויקט שלך
    (Firebase Console → Project settings → Your apps → Web app)
    ==================================================================== */
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCkkl8_yJQNI0b0dATgLrmFa2_2NnsOXto",
+  authDomain: "car-buying-f4275.firebaseapp.com",
+  databaseURL: "https://car-buying-f4275-default-rtdb.firebaseio.com",
+  projectId: "car-buying-f4275",
+  storageBucket: "car-buying-f4275.firebasestorage.app",
+  messagingSenderId: "251440693656",
+  appId: "1:251440693656:web:5ff4561619a7094bb32bed"
 };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 /* ==================================================================== */
 
 const CURRENT_YEAR = new Date().getFullYear();
