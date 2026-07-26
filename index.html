@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#12161D">
+<title>מעקב חיפוש רכב מיני</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12161D; --surface:#1A212C; --surface-2:#212A38;
+    --border:#2B3242; --border-soft:#232B39;
+    --text:#E8EAEE; --text-dim:#8C93A3; --text-faint:#5B6373;
+    --teal:#2DD4BF; --teal-dim:#173733;
+    --amber:#F0A93A; --amber-dim:#3A2E15;
+    --red:#EF5D67; --red-dim:#3A1B20;
+    --blue:#4C8DFF; --blue-dim:#16233F;
+    --font-h:'IBM Plex Sans Hebrew',sans-serif;
+    --font-m:'IBM Plex Mono',monospace;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-h);direction:rtl;padding:24px 18px 60px;min-height:100vh;}
+  .wrap{max-width:1180px;margin:0 auto;}
+
+  header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border-soft);}
+  .title-block h1{font-size:21px;font-weight:700;margin:0 0 6px;display:flex;align-items:center;gap:10px;}
+  .title-block p{margin:0;color:var(--text-dim);font-size:12.5px;}
+  .status-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim);border:1px solid var(--border);padding:4px 10px;border-radius:99px;margin-top:8px;}
+  .status-pill .dot{width:7px;height:7px;border-radius:50%;}
+  .stats{display:flex;gap:12px;flex-wrap:wrap;}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 16px;min-width:120px;}
+  .stat-card .label{font-size:10.5px;color:var(--text-dim);margin-bottom:6px;}
+  .odometer{display:inline-flex;background:#0B0E13;border:1px solid var(--border);border-radius:5px;padding:4px 6px;box-shadow:inset 0 2px 4px rgba(0,0,0,.5);gap:2px;}
+  .odometer .digit{font-family:var(--font-m);font-weight:700;font-size:17px;color:var(--teal);text-shadow:0 0 6px rgba(45,212,191,.45);width:12px;text-align:center;}
+  .stat-card .best{font-family:var(--font-m);font-size:12.5px;color:var(--teal);}
+  .stat-card .plain{font-family:var(--font-m);font-size:19px;}
+
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text-dim);margin-bottom:22px;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:20px;}
+  .card h2{font-size:13.5px;margin:0 0 12px;font-weight:600;display:flex;align-items:center;justify-content:space-between;}
+  .cancel-edit{font-size:12px;color:var(--text-dim);cursor:pointer;text-decoration:underline;font-weight:400;}
+  form{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:11px;}
+  form .full{grid-column:1/-1;}
+  label{display:flex;flex-direction:column;gap:5px;font-size:11.5px;color:var(--text-dim);}
+  input,select,textarea{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:8px 9px;color:var(--text);font-family:var(--font-h);font-size:13px;outline:none;width:100%;}
+  input:focus,select:focus,textarea:focus{border-color:var(--blue);}
+  input[type=number]{font-family:var(--font-m);}
+  textarea{resize:vertical;min-height:38px;font-family:var(--font-h);}
+  .form-actions{grid-column:1/-1;display:flex;justify-content:flex-end;margin-top:2px;}
+  button{font-family:var(--font-h);cursor:pointer;border:none;border-radius:7px;font-size:13px;font-weight:600;}
+  .btn-primary{background:var(--blue);color:#fff;padding:9px 22px;}
+  .btn-primary:hover{background:#5f99ff;}
+  .btn-primary:disabled{opacity:.5;cursor:default;}
+
+  .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;}
+  .chip{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:6px 13px;border-radius:99px;font-size:12px;cursor:pointer;}
+  .chip.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue);}
+  .sort-select{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:7px 10px;border-radius:7px;font-size:12px;}
+
+  .table-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);}
+  table{width:100%;border-collapse:collapse;min-width:900px;}
+  thead th{text-align:right;font-size:11px;color:var(--text-dim);font-weight:600;padding:10px 12px;background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap;}
+  tbody td{padding:11px 12px;font-size:12.5px;border-bottom:1px solid var(--border-soft);white-space:nowrap;vertical-align:middle;}
+  tbody tr{background:var(--surface);border-inline-start:3px solid transparent;transition:background .15s;}
+  tbody tr:hover{background:var(--surface-2);}
+  tbody tr:last-child td{border-bottom:none;}
+  .model-cell{font-weight:600;}
+  .num{font-family:var(--font-m);}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:6px;font-family:var(--font-m);font-size:12px;font-weight:600;white-space:nowrap;}
+  .badge .dot{width:6px;height:6px;}
+  select.inline{background:transparent;border:1px solid var(--border);color:var(--text-dim);font-size:11.5px;padding:4px 6px;border-radius:6px;}
+  .row-actions{display:flex;gap:8px;}
+  .icon-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:5px 9px;border-radius:6px;font-size:11.5px;}
+  .icon-btn.danger{color:var(--red);}
+  .icon-btn.danger.confirm{background:var(--red-dim);border-color:var(--red);}
+  a.link-icon{color:var(--blue);text-decoration:none;font-size:11.5px;}
+
+  .card-view{display:none;flex-direction:column;gap:12px;}
+  .car-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;border-inline-start:3px solid transparent;}
+  .cc-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+  .cc-model{font-weight:700;font-size:14px;}
+  .cc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+  .cc-grid>div{display:flex;flex-direction:column;gap:2px;}
+  .cc-label{font-size:10px;color:var(--text-faint);}
+  .cc-selects{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+  .cc-selects label{font-size:10px;color:var(--text-dim);display:flex;flex-direction:column;gap:3px;flex:1;min-width:90px;}
+  .cc-notes{font-size:12px;color:var(--text-dim);margin-bottom:8px;}
+
+  .empty{text-align:center;padding:44px 20px;color:var(--text-dim);border:1px dashed var(--border);border-radius:var(--radius);font-size:13px;}
+
+  .footer-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:16px;font-size:11px;color:var(--text-faint);}
+  .reset-btn{background:transparent;color:var(--text-faint);font-size:11px;text-decoration:underline;padding:0;}
+  .reset-btn.confirm{color:var(--red);}
+
+  .setup-banner{background:var(--surface);border:1px solid var(--amber);border-radius:var(--radius);padding:22px 24px;line-height:1.9;font-size:13.5px;}
+  .setup-banner h2{margin-top:0;color:var(--amber);font-size:15.5px;}
+  .setup-banner code{background:var(--surface-2);padding:2px 6px;border-radius:4px;font-family:var(--font-m);font-size:12px;}
+  .setup-banner ol{padding-inline-start:20px;}
+  .error-banner{background:var(--red-dim);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:10px 14px;font-size:12.5px;margin-bottom:16px;}
+
+  @media (max-width:720px){
+    body{padding:16px 12px 40px;}
+    header{flex-direction:column;align-items:flex-start;}
+    .table-view{display:none;}
+    .card-view{display:flex;}
+    .cc-grid{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="empty">מתחבר לענן…</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+/* ====================================================================
+   הגדרות Firebase — הדבק כאן את ה-config מהפרויקט שלך
+   (Firebase Console → Project settings → Your apps → Web app)
+   ==================================================================== */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+/* ==================================================================== */
+
+const CURRENT_YEAR = new Date().getFullYear();
+const KNOWN_MODELS = ['יונדאי i10','מיצובישי ספייס סטאר','סקודה סיטיגו'];
+const STATUS_OPTS = ['חדש ברשימה','לתאם בדיקה','נבדק','מועמד רציני','נפסל','נרכש'];
+const COND_OPTS = ['לא נבדק','מצוין','טוב','סביר','דורש טיפול'];
+const STATUS_COLOR = {'חדש ברשימה':'var(--text-dim)','לתאם בדיקה':'var(--amber)','נבדק':'var(--blue)','מועמד רציני':'var(--teal)','נפסל':'var(--red)','נרכש':'var(--teal)'};
+
+let cars = [];
+let filterModel = 'all';
+let sortBy = 'kmYear';
+let editingId = null;
+let confirmDeleteId = null;
+let confirmReset = false;
+let connStatus = 'connecting'; // connecting | connected | error
+let lastError = '';
+
+const app = document.getElementById('app');
+
+function isConfigured(){ return firebaseConfig.apiKey && firebaseConfig.apiKey !== 'YOUR_API_KEY'; }
+
+function ageYears(year){ return Math.max(CURRENT_YEAR - Number(year), 0.5); }
+function avgKmYear(c){ return Math.round(Number(c.km) / ageYears(c.year)); }
+function kmYearLevel(v){
+  if(v < 12000) return {c:'var(--teal)', bg:'var(--teal-dim)', label:'שמור'};
+  if(v <= 18000) return {c:'var(--amber)', bg:'var(--amber-dim)', label:'תקין'};
+  return {c:'var(--red)', bg:'var(--red-dim)', label:'גבוה'};
+}
+function fmt(n){ return Number(n).toLocaleString('he-IL'); }
+function odometerDigits(value, digits=6){
+  const str = String(Math.max(0,Math.round(value))).padStart(digits,'0').slice(-digits);
+  return `<span class="odometer">${str.split('').map(d=>`<span class="digit">${d}</span>`).join('')}</span>`;
+}
+function computeStats(){
+  if(cars.length===0) return null;
+  const avg = Math.round(cars.reduce((s,c)=>s+avgKmYear(c),0)/cars.length);
+  const best = [...cars].sort((a,b)=>avgKmYear(a)-avgKmYear(b))[0];
+  return {count:cars.length, avg, best};
+}
+function statusPillHtml(){
+  const map = {connecting:['var(--amber)','מתחבר…'], connected:['var(--teal)','מחובר · סנכרון בזמן אמת'], error:['var(--red)','שגיאת חיבור']};
+  const [c,l] = map[connStatus];
+  return `<div class="status-pill"><span class="dot" style="background:${c}"></span>${l}</div>`;
+}
+
+function renderSetupBanner(){
+  app.innerHTML = `
+  <div class="setup-banner">
+    <h2>נדרשת הגדרת Firebase</h2>
+    <p>הקובץ מוכן, אבל עדיין לא חובר לפרויקט Firebase. כדי להפעיל:</p>
+    <ol>
+      <li>ב-Firebase Console: צור פרויקט חדש, הפעל <b>Firestore Database</b> (production mode) ואת <b>Authentication → Anonymous</b>.</li>
+      <li>ב-Project settings → Your apps → הוסף אפליקציית Web, והעתק את אובייקט ה-config.</li>
+      <li>הדבק אותו בקובץ, בתוך המשתנה <code>firebaseConfig</code> בראש קטע ה-script.</li>
+      <li>ב-Firestore → Rules, הגדר:
+        <br><code>match /cars/{carId} { allow read, write: if request.auth != null; }</code></li>
+      <li>שמור, פרסם מחדש (commit + push אם זה כבר ב-GitHub Pages), ורענן את הדף.</li>
+    </ol>
+  </div>`;
+}
+
+function render(){
+  if(!isConfigured()){ renderSetupBanner(); return; }
+
+  const stats = computeStats();
+  const models = Array.from(new Set(cars.map(c=>c.model)));
+  let list = filterModel==='all' ? cars.slice() : cars.filter(c=>c.model===filterModel);
+  list.sort((a,b)=>{
+    if(sortBy==='kmYear') return avgKmYear(a)-avgKmYear(b);
+    if(sortBy==='price') return (Number(a.price)||Infinity)-(Number(b.price)||Infinity);
+    if(sortBy==='year') return Number(b.year)-Number(a.year);
+    if(sortBy==='added') return (b.addedAt||0)-(a.addedAt||0);
+    return 0;
+  });
+
+  const rowCommon = c => {
+    const ky = avgKmYear(c); const lvl = kmYearLevel(ky);
+    return {ky, lvl};
+  };
+
+  app.innerHTML = `
+    ${lastError ? `<div class="error-banner">${lastError}</div>` : ''}
+    <header>
+      <div class="title-block">
+        <h1>
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8">
+            <path d="M3 13l1.5-5A2 2 0 0 1 6.4 6.5h11.2A2 2 0 0 1 19.5 8l1.5 5"/>
+            <path d="M3 13h18v4a1 1 0 0 1-1 1h-1.5a1 1 0 0 1-1-1v-1h-13v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-4z"/>
+            <circle cx="7" cy="17.5" r="1.2"/><circle cx="17" cy="17.5" r="1.2"/>
+          </svg>
+          מעקב חיפוש רכב מיני
+        </h1>
+        <p>שנתון מתקדם · מצב שמור · ק״מ ממוצע לשנה נמוך</p>
+        ${statusPillHtml()}
+      </div>
+      <div class="stats">
+        <div class="stat-card"><div class="label">רכבים במעקב</div><div class="plain">${stats?stats.count:'—'}</div></div>
+        <div class="stat-card"><div class="label">ק״מ ממוצע לשנה (כלל הרכבים)</div>${stats?odometerDigits(stats.avg):'<div class="plain">—</div>'}</div>
+        <div class="stat-card"><div class="label">הרכב הכי שמור</div><div class="best">${stats?`${stats.best.model} · ${fmt(avgKmYear(stats.best))} ק״מ/שנה`:'—'}</div></div>
+      </div>
+    </header>
+
+    <div class="legend">
+      <span><span class="dot" style="background:var(--teal)"></span> מתחת ל-12,000 ק״מ/שנה — שמור</span>
+      <span><span class="dot" style="background:var(--amber)"></span> 12,000–18,000 — שימוש רגיל</span>
+      <span><span class="dot" style="background:var(--red)"></span> מעל 18,000 — שימוש גבוה</span>
+    </div>
+
+    <div class="card">
+      <h2><span>${editingId?'עריכת רכב':'הוספת רכב חדש'}</span>${editingId?'<span class="cancel-edit" id="cancelEdit">בטל עריכה</span>':''}</h2>
+      <form id="carForm">
+        <label class="full">דגם
+          <input list="modelList" name="model" required placeholder="לדוגמה: יונדאי i10">
+          <datalist id="modelList">${KNOWN_MODELS.map(m=>`<option value="${m}">`).join('')}</datalist>
+        </label>
+        <label>שנתון<input type="number" name="year" min="1990" max="${CURRENT_YEAR+1}" required placeholder="${CURRENT_YEAR-5}"></label>
+        <label>ק״מ נוכחי<input type="number" name="km" min="0" required placeholder="80000"></label>
+        <label>מחיר (₪)<input type="number" name="price" min="0" placeholder="אופציונלי"></label>
+        <label>מצב מכני<select name="mech">${COND_OPTS.map(o=>`<option>${o}</option>`).join('')}</select></label>
+        <label>מצב פיזי<select name="phys">${COND_OPTS.map(o=>`<option>${o}</option>`).join('')}</select></label>
+        <label>סטטוס<select name="status">${STATUS_OPTS.map(o=>`<option>${o}</option>`).join('')}</select></label>
+        <label>קישור למודעה<input type="url" name="link" placeholder="https://..."></label>
+        <label class="full">הערות<textarea name="notes" placeholder="פרטים נוספים"></textarea></label>
+        <div class="form-actions"><button type="submit" class="btn-primary" id="submitBtn">${editingId?'עדכן רכב':'הוסף רכב'}</button></div>
+      </form>
+    </div>
+
+    <div class="toolbar">
+      <div class="chips">
+        <span class="chip ${filterModel==='all'?'active':''}" data-model="all">הכל (${cars.length})</span>
+        ${models.map(m=>`<span class="chip ${filterModel===m?'active':''}" data-model="${m}">${m} (${cars.filter(c=>c.model===m).length})</span>`).join('')}
+      </div>
+      <select class="sort-select" id="sortSelect">
+        <option value="kmYear" ${sortBy==='kmYear'?'selected':''}>מיין: ק״מ/שנה — הכי שמור קודם</option>
+        <option value="price" ${sortBy==='price'?'selected':''}>מיין: מחיר — הזול קודם</option>
+        <option value="year" ${sortBy==='year'?'selected':''}>מיין: שנתון — החדש קודם</option>
+        <option value="added" ${sortBy==='added'?'selected':''}>מיין: נוסף לאחרונה</option>
+      </select>
+    </div>
+
+    ${list.length===0 ? `<div class="empty">${cars.length===0?'עדיין לא הוספת רכבים למעקב — השתמש בטופס למעלה כדי להתחיל.':'אין רכבים בסינון הנוכחי.'}</div>` : `
+    <div class="table-view table-scroll">
+      <table>
+        <thead><tr><th>דגם</th><th>שנתון</th><th>גיל</th><th>ק״מ נוכחי</th><th>ק״מ/שנה</th><th>מחיר</th><th>מצב מכני</th><th>מצב פיזי</th><th>סטטוס</th><th>הערות</th><th></th></tr></thead>
+        <tbody>
+          ${list.map(c=>{
+            const {ky,lvl} = rowCommon(c);
+            return `
+            <tr style="border-inline-start-color:${STATUS_COLOR[c.status]||'transparent'}">
+              <td class="model-cell">${c.model}${c.link?`<br><a class="link-icon" href="${c.link}" target="_blank" rel="noopener">מודעה ↗</a>`:''}</td>
+              <td class="num">${c.year}</td>
+              <td class="num">${ageYears(c.year).toFixed(1)} ש׳</td>
+              <td class="num">${fmt(c.km)}</td>
+              <td><span class="badge" style="color:${lvl.c};background:${lvl.bg}"><span class="dot" style="background:${lvl.c}"></span>${fmt(ky)} · ${lvl.label}</span></td>
+              <td class="num">${c.price?fmt(c.price)+' ₪':'—'}</td>
+              <td><select class="inline" data-field="mech" data-id="${c.id}">${COND_OPTS.map(o=>`<option ${o===c.mech?'selected':''}>${o}</option>`).join('')}</select></td>
+              <td><select class="inline" data-field="phys" data-id="${c.id}">${COND_OPTS.map(o=>`<option ${o===c.phys?'selected':''}>${o}</option>`).join('')}</select></td>
+              <td><select class="inline" data-field="status" data-id="${c.id}" style="color:${STATUS_COLOR[c.status]}">${STATUS_OPTS.map(o=>`<option ${o===c.status?'selected':''}>${o}</option>`).join('')}</select></td>
+              <td style="max-width:150px;white-space:normal;color:var(--text-dim);font-size:11.5px;">${c.notes||'—'}</td>
+              <td><div class="row-actions">
+                <button class="icon-btn" data-action="edit" data-id="${c.id}">ערוך</button>
+                <button class="icon-btn danger ${confirmDeleteId===c.id?'confirm':''}" data-action="delete" data-id="${c.id}">${confirmDeleteId===c.id?'לאשר?':'מחק'}</button>
+              </div></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div class="card-view">
+      ${list.map(c=>{
+        const {ky,lvl} = rowCommon(c);
+        return `
+        <div class="car-card" style="border-inline-start-color:${STATUS_COLOR[c.status]||'transparent'}">
+          <div class="cc-head">
+            <div class="cc-model">${c.model}</div>
+            <span class="badge" style="color:${lvl.c};background:${lvl.bg}"><span class="dot" style="background:${lvl.c}"></span>${fmt(ky)} · ${lvl.label}</span>
+          </div>
+          <div class="cc-grid">
+            <div><span class="cc-label">שנתון</span><span class="num">${c.year}</span></div>
+            <div><span class="cc-label">גיל</span><span class="num">${ageYears(c.year).toFixed(1)} ש׳</span></div>
+            <div><span class="cc-label">ק״מ</span><span class="num">${fmt(c.km)}</span></div>
+            <div><span class="cc-label">מחיר</span><span class="num">${c.price?fmt(c.price)+' ₪':'—'}</span></div>
+          </div>
+          <div class="cc-selects">
+            <label>מכני<select class="inline" data-field="mech" data-id="${c.id}">${COND_OPTS.map(o=>`<option ${o===c.mech?'selected':''}>${o}</option>`).join('')}</select></label>
+            <label>פיזי<select class="inline" data-field="phys" data-id="${c.id}">${COND_OPTS.map(o=>`<option ${o===c.phys?'selected':''}>${o}</option>`).join('')}</select></label>
+            <label>סטטוס<select class="inline" data-field="status" data-id="${c.id}">${STATUS_OPTS.map(o=>`<option ${o===c.status?'selected':''}>${o}</option>`).join('')}</select></label>
+          </div>
+          ${c.notes?`<div class="cc-notes">${c.notes}</div>`:''}
+          ${c.link?`<a class="link-icon" href="${c.link}" target="_blank" rel="noopener">מודעה ↗</a>`:''}
+          <div class="row-actions" style="margin-top:8px;">
+            <button class="icon-btn" data-action="edit" data-id="${c.id}">ערוך</button>
+            <button class="icon-btn danger ${confirmDeleteId===c.id?'confirm':''}" data-action="delete" data-id="${c.id}">${confirmDeleteId===c.id?'לאשר?':'מחק'}</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    `}
+
+    <div class="footer-row">
+      <span>קירוב: ק״מ/שנה מחושב לפי הפרש שנתונים בלבד. הנתונים מסונכרנים בענן בזמן אמת בין כל המכשירים.</span>
+      <button class="reset-btn ${confirmReset?'confirm':''}" id="resetBtn">${confirmReset?'לאשר איפוס כל הנתונים?':'איפוס כל הנתונים'}</button>
+    </div>
+  `;
+  attachHandlers();
+}
+
+function attachHandlers(){
+  const formEl = document.getElementById('carForm');
+  if(formEl) formEl.addEventListener('submit', async e=>{
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    const fd = new FormData(e.target);
+    const data = {
+      model: fd.get('model').trim(), year: fd.get('year'), km: fd.get('km'),
+      price: fd.get('price') || '', mech: fd.get('mech'), phys: fd.get('phys'),
+      status: fd.get('status'), link: fd.get('link') || '', notes: fd.get('notes') || ''
+    };
+    try{
+      if(editingId){
+        await updateDoc(doc(db,'cars',editingId), data);
+        editingId = null;
+      }else{
+        await addDoc(collection(db,'cars'), {...data, addedAt: Date.now()});
+      }
+      lastError = '';
+    }catch(err){ lastError = 'שגיאה בשמירה: ' + err.message; render(); }
+    btn.disabled = false;
+  });
+
+  const cancelEl = document.getElementById('cancelEdit');
+  if(cancelEl) cancelEl.addEventListener('click', ()=>{ editingId=null; render(); });
+
+  document.querySelectorAll('.chip').forEach(el=>el.addEventListener('click', ()=>{ filterModel = el.dataset.model; render(); }));
+
+  const sortEl = document.getElementById('sortSelect');
+  if(sortEl) sortEl.addEventListener('change', e=>{ sortBy = e.target.value; render(); });
+
+  document.querySelectorAll('select.inline').forEach(el=>{
+    el.addEventListener('change', async e=>{
+      const id = e.target.dataset.id, field = e.target.dataset.field;
+      try{ await updateDoc(doc(db,'cars',id), {[field]: e.target.value}); }
+      catch(err){ lastError = 'שגיאה בעדכון: ' + err.message; render(); }
+    });
+  });
+
+  document.querySelectorAll('[data-action="edit"]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      editingId = el.dataset.id; confirmDeleteId = null; render();
+      const c = cars.find(x=>x.id===editingId);
+      const f = document.getElementById('carForm');
+      f.model.value=c.model; f.year.value=c.year; f.km.value=c.km; f.price.value=c.price||'';
+      f.mech.value=c.mech; f.phys.value=c.phys; f.status.value=c.status; f.link.value=c.link||''; f.notes.value=c.notes||'';
+      f.scrollIntoView({behavior:'smooth', block:'center'});
+    });
+  });
+
+  document.querySelectorAll('[data-action="delete"]').forEach(el=>{
+    el.addEventListener('click', async ()=>{
+      const id = el.dataset.id;
+      if(confirmDeleteId===id){
+        confirmDeleteId = null;
+        try{ await deleteDoc(doc(db,'cars',id)); }
+        catch(err){ lastError = 'שגיאה במחיקה: ' + err.message; render(); }
+      }else{ confirmDeleteId = id; render(); }
+    });
+  });
+
+  const resetEl = document.getElementById('resetBtn');
+  if(resetEl) resetEl.addEventListener('click', async ()=>{
+    if(confirmReset){
+      confirmReset = false;
+      try{ await Promise.all(cars.map(c=>deleteDoc(doc(db,'cars',c.id)))); }
+      catch(err){ lastError = 'שגיאה באיפוס: ' + err.message; render(); }
+    }else{ confirmReset = true; render(); }
+  });
+}
+
+let db, auth;
+
+if(!isConfigured()){
+  renderSetupBanner();
+}else{
+  try{
+    const fbApp = initializeApp(firebaseConfig);
+    db = getFirestore(fbApp);
+    auth = getAuth(fbApp);
+
+    onAuthStateChanged(auth, user=>{
+      if(user){
+        connStatus = 'connected';
+        const q = query(collection(db,'cars'), orderBy('addedAt','desc'));
+        onSnapshot(q, snap=>{
+          cars = snap.docs.map(d=>({id:d.id, ...d.data()}));
+          connStatus = 'connected';
+          render();
+        }, err=>{
+          connStatus = 'error'; lastError = 'שגיאת סנכרון: ' + err.message; render();
+        });
+      }else{
+        signInAnonymously(auth).catch(err=>{
+          connStatus = 'error'; lastError = 'שגיאת התחברות: ' + err.message; render();
+        });
+      }
+    });
+  }catch(err){
+    connStatus = 'error'; lastError = 'שגיאת אתחול Firebase: ' + err.message; render();
+  }
+}
+</script>
+</body>
+</html>
