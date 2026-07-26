@@ -25,7 +25,7 @@
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-h);direction:rtl;padding:24px 18px 60px;min-height:100vh;}
-  .wrap{max-width:1180px;margin:0 auto;}
+  .wrap{max-width:1280px;margin:0 auto;}
 
   header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border-soft);}
   .title-block h1{font-size:21px;font-weight:700;margin:0 0 6px;display:flex;align-items:center;gap:10px;}
@@ -40,7 +40,8 @@
   .stat-card .best{font-family:var(--font-m);font-size:12.5px;color:var(--teal);}
   .stat-card .plain{font-family:var(--font-m);font-size:19px;}
 
-  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text-dim);margin-bottom:22px;}
+  .legend{display:flex;flex-direction:column;gap:8px;font-size:11px;color:var(--text-dim);margin-bottom:22px;}
+  .legend-row{display:flex;gap:14px;flex-wrap:wrap;}
   .legend span{display:inline-flex;align-items:center;gap:6px;}
   .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
 
@@ -52,13 +53,20 @@
   label{display:flex;flex-direction:column;gap:5px;font-size:11.5px;color:var(--text-dim);}
   input,select,textarea{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:8px 9px;color:var(--text);font-family:var(--font-h);font-size:13px;outline:none;width:100%;}
   input:focus,select:focus,textarea:focus{border-color:var(--blue);}
-  input[type=number]{font-family:var(--font-m);}
+  input[type=number],input[type=date]{font-family:var(--font-m);}
+  input[type=file]{padding:6px;font-size:12px;}
   textarea{resize:vertical;min-height:38px;font-family:var(--font-h);}
   .form-actions{grid-column:1/-1;display:flex;justify-content:flex-end;margin-top:2px;}
   button{font-family:var(--font-h);cursor:pointer;border:none;border-radius:7px;font-size:13px;font-weight:600;}
   .btn-primary{background:var(--blue);color:#fff;padding:9px 22px;}
   .btn-primary:hover{background:#5f99ff;}
   .btn-primary:disabled{opacity:.5;cursor:default;}
+
+  .photo-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+  .photo-thumb{position:relative;width:56px;height:56px;border-radius:6px;overflow:hidden;border:1px solid var(--border);}
+  .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .photo-thumb .rm{position:absolute;top:2px;left:2px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:50%;width:16px;height:16px;font-size:10px;line-height:1;cursor:pointer;padding:0;}
+  .photo-note{font-size:10.5px;color:var(--text-faint);margin-top:4px;}
 
   .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
   .chips{display:flex;gap:8px;flex-wrap:wrap;}
@@ -67,7 +75,7 @@
   .sort-select{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:7px 10px;border-radius:7px;font-size:12px;}
 
   .table-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);}
-  table{width:100%;border-collapse:collapse;min-width:900px;}
+  table{width:100%;border-collapse:collapse;min-width:1350px;}
   thead th{text-align:right;font-size:11px;color:var(--text-dim);font-weight:600;padding:10px 12px;background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap;}
   tbody td{padding:11px 12px;font-size:12.5px;border-bottom:1px solid var(--border-soft);white-space:nowrap;vertical-align:middle;}
   tbody tr{background:var(--surface);border-inline-start:3px solid transparent;transition:background .15s;}
@@ -77,6 +85,7 @@
   .num{font-family:var(--font-m);}
   .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:6px;font-family:var(--font-m);font-size:12px;font-weight:600;white-space:nowrap;}
   .badge .dot{width:6px;height:6px;}
+  .score-badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:6px;font-family:var(--font-m);font-size:13px;font-weight:700;}
   select.inline{background:transparent;border:1px solid var(--border);color:var(--text-dim);font-size:11.5px;padding:4px 6px;border-radius:6px;}
   .row-actions{display:flex;gap:8px;}
   .icon-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:5px 9px;border-radius:6px;font-size:11.5px;}
@@ -84,10 +93,17 @@
   .icon-btn.danger.confirm{background:var(--red-dim);border-color:var(--red);}
   a.link-icon{color:var(--blue);text-decoration:none;font-size:11.5px;}
 
+  .row-photo{width:44px;height:44px;border-radius:6px;overflow:hidden;border:1px solid var(--border);cursor:pointer;background:var(--surface-2);}
+  .row-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .row-photo.empty{display:flex;align-items:center;justify-content:center;color:var(--text-faint);font-size:16px;cursor:default;}
+
   .card-view{display:none;flex-direction:column;gap:12px;}
   .car-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;border-inline-start:3px solid transparent;}
+  .cc-photo{width:100%;height:150px;border-radius:8px;overflow:hidden;margin-bottom:10px;cursor:pointer;background:var(--surface-2);}
+  .cc-photo img{width:100%;height:100%;object-fit:cover;display:block;}
   .cc-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
   .cc-model{font-weight:700;font-size:14px;}
+  .cc-badges{display:flex;gap:6px;flex-wrap:wrap;}
   .cc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
   .cc-grid>div{display:flex;flex-direction:column;gap:2px;}
   .cc-label{font-size:10px;color:var(--text-faint);}
@@ -106,6 +122,12 @@
   .setup-banner code{background:var(--surface-2);padding:2px 6px;border-radius:4px;font-family:var(--font-m);font-size:12px;}
   .setup-banner ol{padding-inline-start:20px;}
   .error-banner{background:var(--red-dim);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:10px 14px;font-size:12.5px;margin-bottom:16px;}
+
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:999;}
+  .lightbox-inner{position:relative;max-width:90vw;max-height:85vh;display:flex;align-items:center;gap:14px;}
+  .lightbox-inner img{max-width:74vw;max-height:80vh;border-radius:8px;object-fit:contain;}
+  .lb-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);width:38px;height:38px;flex:none;border-radius:50%;font-size:18px;cursor:pointer;}
+  .lb-close{position:absolute;top:-46px;left:0;}
 
   @media (max-width:720px){
     body{padding:16px 12px 40px;}
@@ -127,8 +149,7 @@ import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 /* ====================================================================
-   הגדרות Firebase — הדבק כאן את ה-config מהפרויקט שלך
-   (Firebase Console → Project settings → Your apps → Web app)
+   הגדרות Firebase
    ==================================================================== */
 const firebaseConfig = {
   apiKey: "AIzaSyCkkl8_yJQNI0b0dATgLrmFa2_2NnsOXto",
@@ -144,20 +165,28 @@ const CURRENT_YEAR = new Date().getFullYear();
 const KNOWN_MODELS = ['יונדאי i10','מיצובישי ספייס סטאר','סקודה סיטיגו'];
 const STATUS_OPTS = ['חדש ברשימה','לתאם בדיקה','נבדק','מועמד רציני','נפסל','נרכש'];
 const COND_OPTS = ['לא נבדק','מצוין','טוב','סביר','דורש טיפול'];
+const HAND_OPTS = ['יד 1','יד 2','יד 3','יד 4','יד 5+'];
 const STATUS_COLOR = {'חדש ברשימה':'var(--text-dim)','לתאם בדיקה':'var(--amber)','נבדק':'var(--blue)','מועמד רציני':'var(--teal)','נפסל':'var(--red)','נרכש':'var(--teal)'};
+const COND_SCORE = {'לא נבדק':50,'מצוין':100,'טוב':75,'סביר':50,'דורש טיפול':20};
+const HAND_SCORE = [100,80,60,40,20];
+const MAX_PHOTOS = 4;
 
 let cars = [];
 let filterModel = 'all';
-let sortBy = 'kmYear';
+let sortBy = 'score';
 let editingId = null;
 let confirmDeleteId = null;
 let confirmReset = false;
 let connStatus = 'connecting'; // connecting | connected | error
 let lastError = '';
+let pendingPhotos = [];
+let lightboxPhotos = [];
+let lightboxIndex = 0;
 
 const app = document.getElementById('app');
 
 function isConfigured(){ return firebaseConfig.apiKey && firebaseConfig.apiKey !== 'YOUR_API_KEY'; }
+function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
 
 function ageYears(year){ return Math.max(CURRENT_YEAR - Number(year), 0.5); }
 function avgKmYear(c){ return Math.round(Number(c.km) / ageYears(c.year)); }
@@ -166,21 +195,110 @@ function kmYearLevel(v){
   if(v <= 18000) return {c:'var(--amber)', bg:'var(--amber-dim)', label:'תקין'};
   return {c:'var(--red)', bg:'var(--red-dim)', label:'גבוה'};
 }
+function scoreLevel(v){
+  if(v>=75) return {c:'var(--teal)', bg:'var(--teal-dim)'};
+  if(v>=50) return {c:'var(--amber)', bg:'var(--amber-dim)'};
+  return {c:'var(--red)', bg:'var(--red-dim)'};
+}
+function testInfo(testDate){
+  if(!testDate) return null;
+  const days = Math.round((new Date(testDate) - new Date())/86400000);
+  if(days < 0) return {c:'var(--red)', bg:'var(--red-dim)', label:'פג תוקף', days};
+  if(days <= 30) return {c:'var(--red)', bg:'var(--red-dim)', label:`${days} ימים`, days};
+  if(days <= 180) return {c:'var(--amber)', bg:'var(--amber-dim)', label:`${Math.round(days/30)} ח׳`, days};
+  return {c:'var(--teal)', bg:'var(--teal-dim)', label:`${Math.round(days/30)} ח׳`, days};
+}
 function fmt(n){ return Number(n).toLocaleString('he-IL'); }
 function odometerDigits(value, digits=6){
   const str = String(Math.max(0,Math.round(value))).padStart(digits,'0').slice(-digits);
   return `<span class="odometer">${str.split('').map(d=>`<span class="digit">${d}</span>`).join('')}</span>`;
 }
+
+/* ----- ציון כולל (אופטימיזציה): 40% ק"מ/שנה, 25% מצב מכני+פיזי, 15% יד, 10% תוקף טסט, 10% מחיר יחסי ----- */
+function computeScore(car, allCars){
+  const kmScore = clamp(100*(1 - avgKmYear(car)/25000), 0, 100);
+  const condScore = ((COND_SCORE[car.mech]??50) + (COND_SCORE[car.phys]??50))/2;
+  const hIdx = HAND_OPTS.indexOf(car.hand);
+  const handScoreV = hIdx>=0 ? HAND_SCORE[hIdx] : 50;
+  let testScoreV = 50;
+  if(car.testDate){
+    const days = Math.round((new Date(car.testDate)-new Date())/86400000);
+    testScoreV = clamp(days/365*100, 0, 100);
+  }
+  const known = allCars.filter(c=>c.price).map(c=>Number(c.price));
+  let priceScoreV = 50;
+  if(car.price && known.length>1){
+    const min = Math.min(...known), max = Math.max(...known);
+    priceScoreV = max>min ? 100 - ((Number(car.price)-min)/(max-min))*100 : 100;
+  }
+  const total = 0.40*kmScore + 0.25*condScore + 0.15*handScoreV + 0.10*testScoreV + 0.10*priceScoreV;
+  return Math.round(clamp(total,0,100));
+}
+
 function computeStats(){
   if(cars.length===0) return null;
-  const avg = Math.round(cars.reduce((s,c)=>s+avgKmYear(c),0)/cars.length);
-  const best = [...cars].sort((a,b)=>avgKmYear(a)-avgKmYear(b))[0];
-  return {count:cars.length, avg, best};
+  const avgKm = Math.round(cars.reduce((s,c)=>s+avgKmYear(c),0)/cars.length);
+  const ranked = cars.map(c=>({c, score:computeScore(c,cars)})).sort((a,b)=>b.score-a.score);
+  return {count:cars.length, avgKm, best:ranked[0].c, bestScore:ranked[0].score};
 }
 function statusPillHtml(){
   const map = {connecting:['var(--amber)','מתחבר…'], connected:['var(--teal)','מחובר · סנכרון בזמן אמת'], error:['var(--red)','שגיאת חיבור']};
   const [c,l] = map[connStatus];
   return `<div class="status-pill"><span class="dot" style="background:${c}"></span>${l}</div>`;
+}
+
+/* ----- תמונות: כיווץ בצד הלקוח לפני שמירה ב-Firestore ----- */
+function resizeImage(file, maxDim=700, quality=0.55){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        let w=img.width, h=img.height;
+        if(w>h){ if(w>maxDim){h=Math.round(h*maxDim/w); w=maxDim;} }
+        else{ if(h>maxDim){w=Math.round(w*maxDim/h); h=maxDim;} }
+        const canvas = document.createElement('canvas');
+        canvas.width=w; canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = ()=>reject(new Error('קובץ תמונה לא תקין'));
+      img.src = e.target.result;
+    };
+    reader.onerror = ()=>reject(new Error('שגיאת קריאת קובץ'));
+    reader.readAsDataURL(file);
+  });
+}
+function renderPhotoPreview(){
+  const el = document.getElementById('photoPreview');
+  if(!el) return;
+  el.innerHTML = pendingPhotos.map((src,i)=>`
+    <div class="photo-thumb"><img src="${src}"><button type="button" class="rm" data-idx="${i}">✕</button></div>`).join('');
+  el.querySelectorAll('.rm').forEach(btn=>{
+    btn.addEventListener('click', ()=>{ pendingPhotos.splice(Number(btn.dataset.idx),1); renderPhotoPreview(); });
+  });
+}
+
+/* ----- לייטבוקס לצפייה בתמונות ----- */
+function openLightbox(photos, idx){ lightboxPhotos = photos; lightboxIndex = idx; renderLightbox(); }
+function closeLightbox(){ lightboxPhotos = []; renderLightbox(); }
+function renderLightbox(){
+  let lb = document.getElementById('lightbox');
+  if(!lightboxPhotos.length){ if(lb) lb.remove(); return; }
+  if(!lb){ lb = document.createElement('div'); lb.id='lightbox'; lb.className='lightbox'; document.body.appendChild(lb); }
+  lb.innerHTML = `
+    <div class="lightbox-inner">
+      <button class="lb-btn lb-close" id="lbClose">✕</button>
+      ${lightboxPhotos.length>1?'<button class="lb-btn" id="lbPrev">‹</button>':''}
+      <img src="${lightboxPhotos[lightboxIndex]}">
+      ${lightboxPhotos.length>1?'<button class="lb-btn" id="lbNext">›</button>':''}
+    </div>`;
+  lb.addEventListener('click', e=>{ if(e.target===lb) closeLightbox(); });
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  const prev = document.getElementById('lbPrev');
+  if(prev) prev.addEventListener('click', ()=>{ lightboxIndex=(lightboxIndex-1+lightboxPhotos.length)%lightboxPhotos.length; renderLightbox(); });
+  const next = document.getElementById('lbNext');
+  if(next) next.addEventListener('click', ()=>{ lightboxIndex=(lightboxIndex+1)%lightboxPhotos.length; renderLightbox(); });
 }
 
 function renderSetupBanner(){
@@ -194,7 +312,7 @@ function renderSetupBanner(){
       <li>הדבק אותו בקובץ, בתוך המשתנה <code>firebaseConfig</code> בראש קטע ה-script.</li>
       <li>ב-Firestore → Rules, הגדר:
         <br><code>match /cars/{carId} { allow read, write: if request.auth != null; }</code></li>
-      <li>שמור, פרסם מחדש (commit + push אם זה כבר ב-GitHub Pages), ורענן את הדף.</li>
+      <li>שמור, פרסם מחדש, ורענן את הדף.</li>
     </ol>
   </div>`;
 }
@@ -204,19 +322,17 @@ function render(){
 
   const stats = computeStats();
   const models = Array.from(new Set(cars.map(c=>c.model)));
+  const scoreMap = new Map(cars.map(c=>[c.id, computeScore(c,cars)]));
+
   let list = filterModel==='all' ? cars.slice() : cars.filter(c=>c.model===filterModel);
   list.sort((a,b)=>{
+    if(sortBy==='score') return scoreMap.get(b.id)-scoreMap.get(a.id);
     if(sortBy==='kmYear') return avgKmYear(a)-avgKmYear(b);
     if(sortBy==='price') return (Number(a.price)||Infinity)-(Number(b.price)||Infinity);
     if(sortBy==='year') return Number(b.year)-Number(a.year);
     if(sortBy==='added') return (b.addedAt||0)-(a.addedAt||0);
     return 0;
   });
-
-  const rowCommon = c => {
-    const ky = avgKmYear(c); const lvl = kmYearLevel(ky);
-    return {ky, lvl};
-  };
 
   app.innerHTML = `
     ${lastError ? `<div class="error-banner">${lastError}</div>` : ''}
@@ -235,15 +351,18 @@ function render(){
       </div>
       <div class="stats">
         <div class="stat-card"><div class="label">רכבים במעקב</div><div class="plain">${stats?stats.count:'—'}</div></div>
-        <div class="stat-card"><div class="label">ק״מ ממוצע לשנה (כלל הרכבים)</div>${stats?odometerDigits(stats.avg):'<div class="plain">—</div>'}</div>
-        <div class="stat-card"><div class="label">הרכב הכי שמור</div><div class="best">${stats?`${stats.best.model} · ${fmt(avgKmYear(stats.best))} ק״מ/שנה`:'—'}</div></div>
+        <div class="stat-card"><div class="label">ק״מ ממוצע לשנה (כלל הרכבים)</div>${stats?odometerDigits(stats.avgKm):'<div class="plain">—</div>'}</div>
+        <div class="stat-card"><div class="label">המומלץ ביותר (ציון כולל)</div><div class="best">${stats?`${stats.best.model} · ${stats.bestScore}/100`:'—'}</div></div>
       </div>
     </header>
 
     <div class="legend">
-      <span><span class="dot" style="background:var(--teal)"></span> מתחת ל-12,000 ק״מ/שנה — שמור</span>
-      <span><span class="dot" style="background:var(--amber)"></span> 12,000–18,000 — שימוש רגיל</span>
-      <span><span class="dot" style="background:var(--red)"></span> מעל 18,000 — שימוש גבוה</span>
+      <div class="legend-row"><span><b>ציון כולל:</b> 40% ק״מ/שנה · 25% מצב מכני+פיזי · 15% יד · 10% תוקף טסט · 10% מחיר יחסי (נפח מנוע מוצג כמידע בלבד, לא משפיע על הציון)</span></div>
+      <div class="legend-row">
+        <span><span class="dot" style="background:var(--teal)"></span> 75+ מומלץ / מתחת ל-12,000 ק״מ/שנה שמור</span>
+        <span><span class="dot" style="background:var(--amber)"></span> 50-74 סביר / 12,000–18,000</span>
+        <span><span class="dot" style="background:var(--red)"></span> מתחת ל-50 פחות מומלץ / מעל 18,000</span>
+      </div>
     </div>
 
     <div class="card">
@@ -256,11 +375,19 @@ function render(){
         <label>שנתון<input type="number" name="year" min="1990" max="${CURRENT_YEAR+1}" required placeholder="${CURRENT_YEAR-5}"></label>
         <label>ק״מ נוכחי<input type="number" name="km" min="0" required placeholder="80000"></label>
         <label>מחיר (₪)<input type="number" name="price" min="0" placeholder="אופציונלי"></label>
+        <label>יד<select name="hand">${HAND_OPTS.map(o=>`<option>${o}</option>`).join('')}</select></label>
+        <label>נפח מנוע (סמ״ק)<input type="number" name="engineCc" min="0" placeholder="1197"></label>
+        <label>תוקף טסט<input type="date" name="testDate"></label>
         <label>מצב מכני<select name="mech">${COND_OPTS.map(o=>`<option>${o}</option>`).join('')}</select></label>
         <label>מצב פיזי<select name="phys">${COND_OPTS.map(o=>`<option>${o}</option>`).join('')}</select></label>
         <label>סטטוס<select name="status">${STATUS_OPTS.map(o=>`<option>${o}</option>`).join('')}</select></label>
         <label>קישור למודעה<input type="url" name="link" placeholder="https://..."></label>
         <label class="full">הערות<textarea name="notes" placeholder="פרטים נוספים"></textarea></label>
+        <label class="full">תמונות (עד ${MAX_PHOTOS}, מכווצות אוטומטית)
+          <input type="file" id="photoInput" accept="image/*" multiple>
+          <div class="photo-preview" id="photoPreview"></div>
+          <div class="photo-note">תמונות נשמרות בתוך מסד הנתונים בגודל מוקטן — מומלץ לא להעלות יותר מ-${MAX_PHOTOS} תמונות לרכב.</div>
+        </label>
         <div class="form-actions"><button type="submit" class="btn-primary" id="submitBtn">${editingId?'עדכן רכב':'הוסף רכב'}</button></div>
       </form>
     </div>
@@ -271,6 +398,7 @@ function render(){
         ${models.map(m=>`<span class="chip ${filterModel===m?'active':''}" data-model="${m}">${m} (${cars.filter(c=>c.model===m).length})</span>`).join('')}
       </div>
       <select class="sort-select" id="sortSelect">
+        <option value="score" ${sortBy==='score'?'selected':''}>מיין: ציון כולל — הכי מומלץ קודם</option>
         <option value="kmYear" ${sortBy==='kmYear'?'selected':''}>מיין: ק״מ/שנה — הכי שמור קודם</option>
         <option value="price" ${sortBy==='price'?'selected':''}>מיין: מחיר — הזול קודם</option>
         <option value="year" ${sortBy==='year'?'selected':''}>מיין: שנתון — החדש קודם</option>
@@ -281,21 +409,31 @@ function render(){
     ${list.length===0 ? `<div class="empty">${cars.length===0?'עדיין לא הוספת רכבים למעקב — השתמש בטופס למעלה כדי להתחיל.':'אין רכבים בסינון הנוכחי.'}</div>` : `
     <div class="table-view table-scroll">
       <table>
-        <thead><tr><th>דגם</th><th>שנתון</th><th>גיל</th><th>ק״מ נוכחי</th><th>ק״מ/שנה</th><th>מחיר</th><th>מצב מכני</th><th>מצב פיזי</th><th>סטטוס</th><th>הערות</th><th></th></tr></thead>
+        <thead><tr>
+          <th>דגם</th><th>ציון</th><th>שנתון (גיל)</th><th>ק״מ נוכחי</th><th>ק״מ/שנה</th><th>יד</th><th>מנוע</th><th>טסט</th>
+          <th>מחיר</th><th>מצב מכני</th><th>מצב פיזי</th><th>סטטוס</th><th>תמונה</th><th>הערות</th><th></th>
+        </tr></thead>
         <tbody>
           ${list.map(c=>{
-            const {ky,lvl} = rowCommon(c);
+            const ky = avgKmYear(c); const lvl = kmYearLevel(ky);
+            const score = scoreMap.get(c.id); const sl = scoreLevel(score);
+            const ti = testInfo(c.testDate);
+            const hasPhoto = c.photos && c.photos.length;
             return `
             <tr style="border-inline-start-color:${STATUS_COLOR[c.status]||'transparent'}">
               <td class="model-cell">${c.model}${c.link?`<br><a class="link-icon" href="${c.link}" target="_blank" rel="noopener">מודעה ↗</a>`:''}</td>
-              <td class="num">${c.year}</td>
-              <td class="num">${ageYears(c.year).toFixed(1)} ש׳</td>
+              <td><span class="score-badge" style="color:${sl.c};background:${sl.bg}">${score}/100</span></td>
+              <td class="num">${c.year} (${ageYears(c.year).toFixed(1)} ש׳)</td>
               <td class="num">${fmt(c.km)}</td>
               <td><span class="badge" style="color:${lvl.c};background:${lvl.bg}"><span class="dot" style="background:${lvl.c}"></span>${fmt(ky)} · ${lvl.label}</span></td>
+              <td class="num">${c.hand||'—'}</td>
+              <td class="num">${c.engineCc?fmt(c.engineCc)+' סמ״ק':'—'}</td>
+              <td>${ti?`<span class="badge" style="color:${ti.c};background:${ti.bg}">${ti.label}</span>`:'—'}</td>
               <td class="num">${c.price?fmt(c.price)+' ₪':'—'}</td>
               <td><select class="inline" data-field="mech" data-id="${c.id}">${COND_OPTS.map(o=>`<option ${o===c.mech?'selected':''}>${o}</option>`).join('')}</select></td>
               <td><select class="inline" data-field="phys" data-id="${c.id}">${COND_OPTS.map(o=>`<option ${o===c.phys?'selected':''}>${o}</option>`).join('')}</select></td>
               <td><select class="inline" data-field="status" data-id="${c.id}" style="color:${STATUS_COLOR[c.status]}">${STATUS_OPTS.map(o=>`<option ${o===c.status?'selected':''}>${o}</option>`).join('')}</select></td>
+              <td>${hasPhoto?`<div class="row-photo" data-action="viewphoto" data-id="${c.id}"><img src="${c.photos[0]}"></div>`:'<div class="row-photo empty">📷</div>'}</td>
               <td style="max-width:150px;white-space:normal;color:var(--text-dim);font-size:11.5px;">${c.notes||'—'}</td>
               <td><div class="row-actions">
                 <button class="icon-btn" data-action="edit" data-id="${c.id}">ערוך</button>
@@ -308,18 +446,27 @@ function render(){
     </div>
     <div class="card-view">
       ${list.map(c=>{
-        const {ky,lvl} = rowCommon(c);
+        const ky = avgKmYear(c); const lvl = kmYearLevel(ky);
+        const score = scoreMap.get(c.id); const sl = scoreLevel(score);
+        const ti = testInfo(c.testDate);
+        const hasPhoto = c.photos && c.photos.length;
         return `
         <div class="car-card" style="border-inline-start-color:${STATUS_COLOR[c.status]||'transparent'}">
+          ${hasPhoto?`<div class="cc-photo" data-action="viewphoto" data-id="${c.id}"><img src="${c.photos[0]}"></div>`:''}
           <div class="cc-head">
             <div class="cc-model">${c.model}</div>
-            <span class="badge" style="color:${lvl.c};background:${lvl.bg}"><span class="dot" style="background:${lvl.c}"></span>${fmt(ky)} · ${lvl.label}</span>
+            <div class="cc-badges">
+              <span class="score-badge" style="color:${sl.c};background:${sl.bg}">${score}/100</span>
+              <span class="badge" style="color:${lvl.c};background:${lvl.bg}">${fmt(ky)} · ${lvl.label}</span>
+            </div>
           </div>
           <div class="cc-grid">
-            <div><span class="cc-label">שנתון</span><span class="num">${c.year}</span></div>
-            <div><span class="cc-label">גיל</span><span class="num">${ageYears(c.year).toFixed(1)} ש׳</span></div>
+            <div><span class="cc-label">שנתון</span><span class="num">${c.year} (${ageYears(c.year).toFixed(1)} ש׳)</span></div>
             <div><span class="cc-label">ק״מ</span><span class="num">${fmt(c.km)}</span></div>
+            <div><span class="cc-label">יד</span><span class="num">${c.hand||'—'}</span></div>
+            <div><span class="cc-label">מנוע</span><span class="num">${c.engineCc?fmt(c.engineCc)+' סמ״ק':'—'}</span></div>
             <div><span class="cc-label">מחיר</span><span class="num">${c.price?fmt(c.price)+' ₪':'—'}</span></div>
+            <div><span class="cc-label">טסט</span>${ti?`<span class="badge" style="color:${ti.c};background:${ti.bg}">${ti.label}</span>`:'<span class="num">—</span>'}</div>
           </div>
           <div class="cc-selects">
             <label>מכני<select class="inline" data-field="mech" data-id="${c.id}">${COND_OPTS.map(o=>`<option ${o===c.mech?'selected':''}>${o}</option>`).join('')}</select></label>
@@ -338,11 +485,12 @@ function render(){
     `}
 
     <div class="footer-row">
-      <span>קירוב: ק״מ/שנה מחושב לפי הפרש שנתונים בלבד. הנתונים מסונכרנים בענן בזמן אמת בין כל המכשירים.</span>
+      <span>קירוב: ק״מ/שנה מחושב לפי הפרש שנתונים בלבד. הנתונים והתמונות מסונכרנים בענן בזמן אמת בין כל המכשירים.</span>
       <button class="reset-btn ${confirmReset?'confirm':''}" id="resetBtn">${confirmReset?'לאשר איפוס כל הנתונים?':'איפוס כל הנתונים'}</button>
     </div>
   `;
   attachHandlers();
+  renderPhotoPreview();
 }
 
 function attachHandlers(){
@@ -354,9 +502,15 @@ function attachHandlers(){
     const fd = new FormData(e.target);
     const data = {
       model: fd.get('model').trim(), year: fd.get('year'), km: fd.get('km'),
-      price: fd.get('price') || '', mech: fd.get('mech'), phys: fd.get('phys'),
-      status: fd.get('status'), link: fd.get('link') || '', notes: fd.get('notes') || ''
+      price: fd.get('price') || '', hand: fd.get('hand'), engineCc: fd.get('engineCc') || '',
+      testDate: fd.get('testDate') || '', mech: fd.get('mech'), phys: fd.get('phys'),
+      status: fd.get('status'), link: fd.get('link') || '', notes: fd.get('notes') || '',
+      photos: [...pendingPhotos]
     };
+    if(JSON.stringify(data).length > 900000){
+      lastError = 'התמונות גדולות מדי לשמירה — נסה פחות תמונות או תמונות פשוטות יותר.';
+      btn.disabled = false; render(); return;
+    }
     try{
       if(editingId){
         await updateDoc(doc(db,'cars',editingId), data);
@@ -364,13 +518,24 @@ function attachHandlers(){
       }else{
         await addDoc(collection(db,'cars'), {...data, addedAt: Date.now()});
       }
-      lastError = '';
+      lastError = ''; pendingPhotos = [];
     }catch(err){ lastError = 'שגיאה בשמירה: ' + err.message; render(); }
     btn.disabled = false;
   });
 
+  const photoInput = document.getElementById('photoInput');
+  if(photoInput) photoInput.addEventListener('change', async e=>{
+    const files = Array.from(e.target.files).slice(0, MAX_PHOTOS - pendingPhotos.length);
+    for(const file of files){
+      try{ pendingPhotos.push(await resizeImage(file)); }
+      catch(err){ console.error(err); }
+    }
+    e.target.value = '';
+    renderPhotoPreview();
+  });
+
   const cancelEl = document.getElementById('cancelEdit');
-  if(cancelEl) cancelEl.addEventListener('click', ()=>{ editingId=null; render(); });
+  if(cancelEl) cancelEl.addEventListener('click', ()=>{ editingId=null; pendingPhotos=[]; render(); });
 
   document.querySelectorAll('.chip').forEach(el=>el.addEventListener('click', ()=>{ filterModel = el.dataset.model; render(); }));
 
@@ -385,12 +550,22 @@ function attachHandlers(){
     });
   });
 
+  document.querySelectorAll('[data-action="viewphoto"]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const c = cars.find(x=>x.id===el.dataset.id);
+      if(c && c.photos && c.photos.length) openLightbox(c.photos, 0);
+    });
+  });
+
   document.querySelectorAll('[data-action="edit"]').forEach(el=>{
     el.addEventListener('click', ()=>{
-      editingId = el.dataset.id; confirmDeleteId = null; render();
+      editingId = el.dataset.id; confirmDeleteId = null;
       const c = cars.find(x=>x.id===editingId);
+      pendingPhotos = c.photos ? [...c.photos] : [];
+      render();
       const f = document.getElementById('carForm');
       f.model.value=c.model; f.year.value=c.year; f.km.value=c.km; f.price.value=c.price||'';
+      f.hand.value=c.hand||HAND_OPTS[0]; f.engineCc.value=c.engineCc||''; f.testDate.value=c.testDate||'';
       f.mech.value=c.mech; f.phys.value=c.phys; f.status.value=c.status; f.link.value=c.link||''; f.notes.value=c.notes||'';
       f.scrollIntoView({behavior:'smooth', block:'center'});
     });
